@@ -1,0 +1,32 @@
+#!/bin/sh
+# shell is not BASH. so, just loop 10 times. (total 30 sec.)
+# This code will works merlin firmwared version. (not for original one)
+
+for i in 1 2 3 4 5 6 7 8 9 10
+do
+  # check radio nvram status.
+  r=`nvram get wl0_radio`
+  if [ "$r" -ne "1" ]; then
+    # set nvram.
+    nvram set wl_radio=1
+    nvram set wl0_radio=1
+    nvram set wl1_radio=1
+
+    # You can update country code. insted of CFE set.
+    #nvram set wl0_country_code=KR
+    #nvram set wl1_country_code=KR
+
+    nvram commit
+    
+    # waiting.
+    sleep 3
+    
+    # force reboot
+    restart_wireless >> /tmp/started 2>&1
+
+  fi
+
+  # wait.
+  sleep 3
+
+done
